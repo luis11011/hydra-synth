@@ -1055,5 +1055,27 @@ module.exports = {
         .color([1,0,0,1,0],[0,1,0,1,0],[0,0,1,1,0])
         .colorama([0.005,0.33,0.66,1.0].fast(0.125))
         .out(o0)`,
+  },
+  clampColor: {
+    type: 'color',
+    inputs: [
+    { name: 'min', type: 'float', default: 0.1 },
+    { name: 'max', type: 'float', default: 0.9 }
+    ],
+    description:
+    'Clamp color.',
+    glsl: `vec4 clampColor(vec4 c0, float min, float max){
+      vec3 c = clamp(c0.rgb,vec3(min),vec3(max));
+      return vec4(c, c0.a);
+    }`,
+    example: `
+    // 20Hz oscillator source
+    // color sequence of Red, Green, Blue, White, Black
+    // colorama sequence of min value 0.005, 0.33 at 1/8 speed and max value 0.5, 1.0 at 1/4 speed 
+    // output to buffer o0
+    osc(20)
+      .color([1,0,0,1,0],[0,1,0,1,0],[0,0,1,1,0])
+      .clampColor([0.005,0.33].fast(0.125),[0.5, 1.0].fast(0.25))
+      .out(o0)`,
   }
 }
