@@ -5,8 +5,8 @@
   "main": "index.js",
   "scripts": {
     "test": "mocha",
-    "example": "budo ./example/index.js --ssl --open --live --port 8000 --",
-    "example-editor": "budo ./example/editor-example.js --ssl --open --live ",
+    "example": "budo ./example/index.js:bundle.js --css ./example/style.css --open --live --port 8000 --",
+    "example-editor": "budo ./example/editor-example.js --open --live ",
     "coverage": "nyc npm run test"
   },
   "repository": {

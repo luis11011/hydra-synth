@@ -1,91 +1,73 @@
-//const Hydra = require('./../src/index.js')
-
-const Hydra = require('./../')
-const Analyzer = require('web-audio-analyser')
-const getUserMedia = require('getusermedia')
+const HydraSynth = require('./../index.js')
 const loop = require('raf-loop')
 
-function init () {
-  var hydra = new Hydra({
-    //  autoLoad: false
-    enableStreamCapture: true,
-    detectAudio: true
-  })
+var lastCode = ''
 
-  window.hydra = hydra
+var p = 0
 
-  var sinN = v => (Math.sin(v)+1)/2
-  var cosN = v => (Math.cos(v)+1)/2
+async function loadScript() {
 
-  // example custom function
-  synth.setFunction('ooo', {
-    type: 'src',
-    inputs: [
-      {
-        name: 'frequency',
-        type: 'float',
-        default: 60.0
-      },
-      {
-        name: 'sync',
-        type: 'float',
-        default: 0.1
-      },
-      {
-        name: 'offset',
-        type: 'float',
-        default: 0.0
-      }
-    ],
-    glsl: `vec4 ooo(vec2 _st, float freq, float sync, float offset){
-      vec2 st = _st;
-      float r = sin((st.x-offset/freq+time*sync)*freq)*0.5  + 0.5;
-      float g = sin((st.x+time*sync)*freq)*0.5 + 0.5;
-      float b = sin((st.x+offset/freq+time*sync)*freq)*0.5  + 0.5;
-      return vec4(r, g, b, 1.0);
-    }`
-  })
+	var file = "jam.js?v="+(p++)
 
-  ooo(10, 0.01, 1.2).blur().out()
+	// var s = document.createElement("script")
+	// s.id = 'the-script'
+	// s.type = "text/javascript"
+	// s.src = file
+	// document.body.appendChild(s)
 
-  // Example array sequences
-  shape([4, 5, 3]).out()
+	var response = await fetch(file)
+	var code = await response.text()
+	if (lastCode!=code) {
+		lastCode = code
+		eval(lastCode)
+	}
+}
 
-  // array easing
-  shape([4, 3, 2].ease('easeInQuad')).out()
+var ms = 0
+var fps = 32
 
-  // array smoothing
-  shape([4, 3, 2].smooth()).out()
+mul = 1
 
-  // set bpm
-  bpm(30)
+var msfps = 1000/fps
 
-  var x = 0
-  loop((dt) => {
-    hydra.tick(dt)
-  }).start()
+function init() {
 
-  // mouse control
-  shape(3, () => mouse.y/height).out()
+	const canvas = document.createElement('canvas')
+	canvas.style.backgroundColor = "#000"
+	canvas.width = window.innerWidth / 1.5
+	canvas.height = window.innerHeight / 1.5
 
-  // smooth factor
-  var shapes = [
-    shape(4)
-      .scale(1,0.5,[1,2])
-      .scrollX(0.3),
-    shape(4)
-      .scale(1,0.5,[1,2].smooth(0.5))
-      .scrollX(0.0),
-    shape(4)
-      .scale(1,0.5,[1,2].smooth())
-      .scrollX(-0.3),
-  ]
+	canvas.style.width = '100vw'
+	canvas.style.height = '100vh'
 
-  solid()
-    .add(shapes[0])
-    .add(shapes[1])
-    .add(shapes[2])
-    .out(o0)
+    document.body.appendChild(canvas)
+    
+	var hydra = new HydraSynth({
+		autoLoop: false,
+		canvas: canvas,
+		detectAudio: false
+		// enableStreamCapture: true,
+	})
+
+	window.hydra = hydra
+
+	
+
+	loop((delta) => {
+		ms=(ms+delta)
+		if (ms>msfps){
+			// console.log(1000/ms)
+			hydra.tick(ms*mul)
+			ms = 0
+		}
+	}).start()
+	
+	loadScript()
+
+	setInterval(() => {
+		loadScript()
+	}, 500)
+
 
 }
 
