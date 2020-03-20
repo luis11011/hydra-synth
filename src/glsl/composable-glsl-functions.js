@@ -646,7 +646,7 @@ module.exports = {
       }
     ],
     glsl: `vec4 add(vec4 c0, vec4 c1, float amount){
-            return (c0+c1)*amount + c0*(1.0-amount);
+						return c0 + c1*amount;
           }`
   },
   sub: {
