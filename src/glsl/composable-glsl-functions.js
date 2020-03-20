@@ -318,6 +318,49 @@ module.exports = {
     }
     `
   },
+  clamp: {
+    type: 'color',
+    inputs: [
+      {
+        name: 'rb',
+        type: 'float',
+        default: 0.0
+      },
+      {
+        name: 'gb',
+        type: 'float',
+        default: 0.0
+      },
+      {
+        name: 'bb',
+        type: 'float',
+        default: 0.1
+      },
+      {
+        name: 'rt',
+        type: 'float',
+        default: 1.0
+      },
+      {
+        name: 'gt',
+        type: 'float',
+        default: 0.5
+      },
+      {
+        name: 'bt',
+        type: 'float',
+        default: 1.0
+      },
+    ],
+    glsl: `vec4 clamp(vec4 c, float rb, float gb, float bb, float rt, float gt, float bt){
+      vec4 c2 = vec4(c);
+      c2.r = clamp(c2.r, rb, rt);
+      c2.g = clamp(c2.g, gb, gt);
+      c2.b = clamp(c2.b, bb, bt);
+      return vec4(c2.rgba);
+    }
+    `
+  },
   repeat: {
     type: 'coord',
     inputs: [
