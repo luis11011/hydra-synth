@@ -649,6 +649,23 @@ module.exports = {
             return max(c0, c1*amount);
           }`
   },
+  darker: {
+    type: 'combine',
+    inputs: [
+      {
+        name: 'color',
+        type: 'vec4'
+      },
+      {
+        name: 'amount',
+        type: 'float',
+        default: 1.0
+      }
+    ],
+    glsl: `vec4 darker(vec4 c0, vec4 c1, float amount){
+            return c0 + (min(c0, c1) - c0)*amount;
+          }`
+  },
   add: {
     type: 'combine',
     inputs: [
