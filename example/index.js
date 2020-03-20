@@ -3,11 +3,9 @@ const loop = require('raf-loop')
 
 var lastCode = ''
 
-var p = 0
-
 async function loadScript() {
 
-	var file = "jam.js?v="+(p++)
+	var file = "jam.js?v="+(new Date())
 
 	// var s = document.createElement("script")
 	// s.id = 'the-script'
@@ -34,8 +32,8 @@ function init() {
 
 	const canvas = document.createElement('canvas')
 	canvas.style.backgroundColor = "#000"
-	canvas.width = window.innerWidth / 1.5
-	canvas.height = window.innerHeight / 1.5
+	canvas.width = window.innerWidth / 1.01
+	canvas.height = window.innerHeight / 1.01
 
 	canvas.style.width = '100vw'
 	canvas.style.height = '100vh'
