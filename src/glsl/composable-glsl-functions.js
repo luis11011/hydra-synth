@@ -770,7 +770,7 @@ module.exports = {
       }
     ],
     glsl: `vec4 blend(vec4 c0, vec4 c1, float amount){
-			return c0 + (c1-c0)*amount;
+      return c0*(1.0-amount)+c1*amount;
     }`
   },
   mult: {
