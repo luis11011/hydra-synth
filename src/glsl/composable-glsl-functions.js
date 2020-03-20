@@ -632,6 +632,23 @@ module.exports = {
       return st;
     }`
   },
+  lighter: {
+    type: 'combine',
+    inputs: [
+      {
+        name: 'color',
+        type: 'vec4'
+      },
+      {
+        name: 'amount',
+        type: 'float',
+        default: 1.0
+      }
+    ],
+    glsl: `vec4 lighter(vec4 c0, vec4 c1, float amount){
+            return max(c0, c1*amount);
+          }`
+  },
   add: {
     type: 'combine',
     inputs: [
