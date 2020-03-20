@@ -710,7 +710,7 @@ module.exports = {
       }
     ],
     glsl: `vec4 mult(vec4 c0, vec4 c1, float amount){
-      return c0*(1.0-amount)+(c0*c1)*amount;
+			return c0*(1.0-amount+(c1*amount));
     }`
   },
 
