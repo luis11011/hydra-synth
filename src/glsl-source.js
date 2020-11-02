@@ -13,6 +13,8 @@ var GlslSource = function (obj) {
   return this
 }
 
+GlslSource.prototype.utils = []
+
 GlslSource.prototype.addTransform = function (obj)  {
     this.transforms.push(obj)
 }
@@ -63,6 +65,9 @@ GlslSource.prototype.glsl = function () {
 
 GlslSource.prototype.compile = function (transforms) {
 
+  
+  var utils = GlslSource.prototype.utils;
+  
   var shaderInfo = generateGlsl(transforms)
   var uniforms = {}
   shaderInfo.uniforms.forEach((uniform) => { uniforms[uniform.name] = uniform.value })
@@ -88,6 +93,13 @@ GlslSource.prototype.compile = function (transforms) {
   //  console.log(transform.glsl)
     return `
             ${transform.glsl}
+          `
+  }).join('')}
+
+  ${utils.map((transform) => {
+   console.log(transform)
+    return `
+            ${transform.transform.glsl}
           `
   }).join('')}
 

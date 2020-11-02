@@ -63,7 +63,9 @@ class GeneratorFactory {
 
  _addMethod (method, transform) {
 //   console.log('adding', method, transform)
-    this.glslTransforms[method] = transform
+    if (transform.type !== 'utils') {
+      this.glslTransforms[method] = transform
+    }
     if (transform.type === 'src') {
       const func = (...args) => new this.sourceClass({
         name: method,
@@ -76,7 +78,9 @@ class GeneratorFactory {
       this.generators[method] = func
       this.changeListener({type: 'add', synth: this, method})
       return func
-    } else  {
+    } else if (transform.type === 'utils') {
+      this.sourceClass.prototype.utils.push({name: method, transform: transform})
+    } else {
       this.sourceClass.prototype[method] = function (...args) {
         this.transforms.push({name: method, transform: transform, userArgs: args})
         return this
@@ -114,6 +118,10 @@ const typeLookup = {
   'combineCoord': {
     returnType: 'vec2',
     args: ['vec2 _st', 'vec4 _c0']
+  },
+  'utils': {
+    returnType: false,
+    args: []
   }
 }
 // expects glsl of format
@@ -160,11 +168,13 @@ function processGlsl(obj) {
   if(t) {
   let baseArgs = t.args.map((arg) => arg).join(", ")
   // @todo: make sure this works for all input types, add validation
-  let customArgs = obj.inputs.map((input) => `${input.type} ${input.name}`).join(', ')
+  let customArgs = (obj.inputs || []).map((input) => `${input.type} ${input.name}`).join(', ')
   let args = `${baseArgs}${customArgs.length > 0 ? ', '+ customArgs: ''}`
 //  console.log('args are ', args)
 
     let glslFunction =
+(obj.type === 'utils') ?
+obj.glsl :
 `
   ${t.returnType} ${obj.name}(${args}) {
       ${obj.glsl}
